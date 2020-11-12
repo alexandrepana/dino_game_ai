@@ -6,13 +6,17 @@ from graphics import *
 from player import *
 from obstacle import *
 
+# Constants
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 750
+
 
 def main():
-    display_graphics = 1    # Set to false if you don't want to display the graphics
+    display_graphics = 0    # Set to false if you don't want to display the graphics
     if display_graphics:
-        win = GraphWin('Dino Game', 750, 500)
+        win = GraphWin('Dino Game', WINDOW_HEIGHT, WINDOW_WIDTH)
     dino = Player()
-    obstacle1 = Obstacle(win.width)
+    obstacle1 = Obstacle(WINDOW_WIDTH)
 
     # Game Loop
     while True:
@@ -34,10 +38,10 @@ def main():
             obstacle1.draw(win)     # draw obstacle
             dino.draw(win)          # draw player
         
-        time.sleep(0.05)
     
     # Game Over
     win.close()
+    
     
         
 
