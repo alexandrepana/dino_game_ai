@@ -39,8 +39,7 @@ def main():
         if display_graphics:
             obstacle1.update_draw()
             dino.update_draw()
-        
-        time.sleep(Constants.DELAY)
+            time.sleep(Constants.DELAY)     # Should we only delay if we're displaying graphics?
             
         
     
