@@ -23,12 +23,12 @@ def main():
         obstacle1.draw(win)     # draw obstacle
         dino.draw(win)          # draw player
 
+
     # Game Loop
     while True:
         try:
             if keyboard.is_pressed('w') and dino.grounded:
                 dino.jump()
-                print(dino.grounded)
         except:
             print('no')
 
@@ -37,7 +37,6 @@ def main():
 
         # Sprite Updates
         if display_graphics:
-            # dino.sprite.move(i, j)
             obstacle1.update_draw()
             dino.update_draw()
         
