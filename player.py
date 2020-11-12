@@ -1,37 +1,38 @@
 #!python3
+import Constants
 from graphics import *
-
-# Constants
-GRAVITY = 1
-GROUND = 100
-
 
 # Our Player Class
 class Player:
     def __init__(self):
         self.x = 50
-        self.y = GROUND
+        self.y = Constants.GROUND
         self.y_vel = 0
         self.jump_speed = 10
         self.grounded = 1
-        self.height = 10
-        self.width = 15
-        self.sprite = 'to do'
+        self.height = 15
+        self.width = 10
+        self.sprite = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
 
     def update(self):
         self.y += self.y_vel
 
-        if (self.y <= GROUND):
-            self.y = GROUND
+        if (self.y <= Constants.GROUND):
+            self.y = Constants.GROUND
             self.y_vel = 0
             self.grounded = 1
         else:
-            self.y_vel -= GRAVITY
+            self.y_vel -= Constants.GRAVITY
             self.grounded = 0
 
     def jump(self):
         self.y_vel = self.jump_speed
     
     def draw(self, win):
-        rect = Rectangle(Point(self.x, win.height - self.y), Point(self.x + self.height, win.height - self.y - self.width))
-        rect.draw(win)
+        self.sprite.draw(win)
+
+    def update_draw(self):
+        # These are specifically for rectangles
+        old_corner1 = self.sprite.getP1()
+        # old_corner2 = self.sprite.getP2()
+        self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())

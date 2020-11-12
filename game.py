@@ -2,41 +2,47 @@
 
 import keyboard
 import time
+import Constants
 from graphics import *
 from player import *
 from obstacle import *
 
-# Constants
-WINDOW_WIDTH = 500
-WINDOW_HEIGHT = 750
-
 
 def main():
-    display_graphics = 0    # Set to false if you don't want to display the graphics
+    display_graphics = 1    # Set to false if you don't want to display the graphics
     if display_graphics:
-        win = GraphWin('Dino Game', WINDOW_HEIGHT, WINDOW_WIDTH)
+        win = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        win.setBackground('white')
     dino = Player()
-    obstacle1 = Obstacle(WINDOW_WIDTH)
+
+    obstacle1 = Obstacle()
+
+
+    # Load Sprites
+    if display_graphics:
+        obstacle1.draw(win)     # draw obstacle
+        dino.draw(win)          # draw player
 
     # Game Loop
     while True:
         try:
             if keyboard.is_pressed('w') and dino.grounded:
                 dino.jump()
+                print(dino.grounded)
         except:
             print('no')
 
         obstacle1.update()
         dino.update()
 
-        # Canvas Updates
+        # Sprite Updates
         if display_graphics:
-            # win.update()
-            background = Rectangle(Point(0, 0), Point(win.width, win.height))
-            background.setFill('white')
-            background.draw(win)    # clear screen
-            obstacle1.draw(win)     # draw obstacle
-            dino.draw(win)          # draw player
+            # dino.sprite.move(i, j)
+            obstacle1.update_draw()
+            dino.update_draw()
+        
+        time.sleep(Constants.DELAY)
+            
         
     
     # Game Over

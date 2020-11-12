@@ -1,28 +1,29 @@
 #!python3
+import Constants
 from graphics import *
-
-# Constants
-GROUND = 100
 
 # Our Player Class
 class Obstacle:
-    def __init__(self, max_x):
-        self.x = max_x
-        self.y = GROUND
+    def __init__(self):
+        self.x = Constants.WINDOW_WIDTH
+        self.y = Constants.GROUND
         self.height = 20
         self.width = 20
         self.speed = 16
-        self.max_x = max_x
-        self.sprite = 'to do'
+        self.sprite = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
 
     def update(self):
         self.x -= self.speed
 
         # Check if Obstacle is off-screen
         if (self.x <= -self.width):
-            self.x = self.max_x
+            self.x = Constants.WINDOW_WIDTH
     
     def draw(self, win):
-        rect = Rectangle(Point(self.x, win.height - self.y), Point(self.x + self.height, win.height - self.y - self.width))
-        rect.setFill('red')
-        rect.draw(win)
+        self.sprite.draw(win)
+
+    def update_draw(self):
+        # These are specifically for rectangles
+        old_corner1 = self.sprite.getP1()
+        # old_corner2 = self.sprite.getP2()
+        self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())
