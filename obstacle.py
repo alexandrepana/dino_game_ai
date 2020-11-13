@@ -1,24 +1,30 @@
 #!python3
 import Constants
+import random
 from graphics import *
 
 # Our Player Class
 class Obstacle:
     def __init__(self):
-        self.x = Constants.WINDOW_WIDTH
+        self.randomize_x()
         self.y = Constants.GROUND
         self.height = 20
         self.width = 20
         self.speed = 16
         self.sprite = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
+        self.sprite.setFill = 'red'
 
-    def update(self):
-        self.x -= self.speed
+    def randomize_x(self):
+        self.x = Constants.WINDOW_WIDTH + random.randrange(0, Constants.WINDOW_HEIGHT * 1.5)
 
-        # Check if Obstacle is off-screen
-        if (self.x <= -self.width):
-            self.x = Constants.WINDOW_WIDTH
-    
+    # This is handled in the obstacle manager now
+    # def update(self):
+    #     self.x -= self.speed
+
+    #     # Check if Obstacle is off-screen
+    #     if (self.x <= -self.width):
+    #         self.randomize_x()
+
     def draw(self, win):
         self.sprite.draw(win)
 
@@ -27,3 +33,49 @@ class Obstacle:
         old_corner1 = self.sprite.getP1()
         # old_corner2 = self.sprite.getP2()
         self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())
+
+
+class Obstacle_Manager:
+    def __init__(self):
+        self.obstacles = [ Obstacle() for i in range(Constants.NUM_OBSTACLES) ]
+        self.min_obstacle_dist = 65
+        self.passed = 0
+        self.passed_string = f'Obstacles Passed: {self.passed}'
+        self.sprite = Text(Point(Constants.WINDOW_WIDTH / 2 - 15, 25), self.passed_string)
+
+        for obstacle in self.obstacles:
+            self.randomize_x(obstacle)
+    
+    def randomize_x(self, obstacle):
+        valid_x = False
+        while (not valid_x):
+            valid_x = True
+            obstacle.randomize_x()
+
+            for other_obstacle in self.obstacles:
+                if obstacle != other_obstacle:
+                    if obstacle.x + obstacle.width > other_obstacle.x - self.min_obstacle_dist and obstacle.x < other_obstacle.x + other_obstacle.width + self.min_obstacle_dist:
+                        valid_x = False
+  
+    def update(self):
+        for obstacle in self.obstacles:
+            obstacle.x -= obstacle.speed
+
+            # Check if Obstacle is off-screen
+            if (obstacle.x <= -obstacle.width):
+                self.passed += 1
+                self.randomize_x(obstacle)
+            
+        
+    def draw(self, win):
+        self.sprite.draw(win)
+        for obstacle in self.obstacles:
+            obstacle.draw(win)
+    
+    def update_draw(self):
+        for obstacle in self.obstacles:
+            obstacle.update_draw()
+            self.sprite.setText(f'Obstacles Passed: {self.passed}')
+    
+    def reset(self):
+        self.passed = 0
