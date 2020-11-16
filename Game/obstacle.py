@@ -73,4 +73,6 @@ class Obstacle_Manager:
             self.sprite.setText(f'Obstacles Passed: {self.passed}')
     
     def reset(self):
+        for obstacle in self.obstacles:
+            self.randomize_x(obstacle)
         self.passed = 0

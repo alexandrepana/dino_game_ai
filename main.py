@@ -18,7 +18,7 @@ def __main__():
     game = Game(win, gamemode, display_graphics)
     # game.play(gamemode, display_graphics)
 
-    game.create_game_objects()
+    # game.create_game_objects()
 
     game.load_sprites()
 
