@@ -1,7 +1,6 @@
 #!python3
-from Game import Constants
-import time
-from Game.graphics import *
+from Game.Modules import *
+
 
 class Score:
     def __init__(self):

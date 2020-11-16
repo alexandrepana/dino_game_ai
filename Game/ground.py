@@ -1,6 +1,6 @@
 #!python3
-from Game import Constants
-from Game.graphics import *
+from Game.Modules import *
+
 
 class Ground:
     def __init__(self):
@@ -14,8 +14,11 @@ class Ground:
     def draw(self, win):
         self.sprite.draw(win)
 
-    # def update(self):
+    def update(self):
+        pass
     
-    # def update_draw(self):
+    def update_draw(self):
+        pass
     
-    # def reset(self):
+    def reset(self):
+        pass

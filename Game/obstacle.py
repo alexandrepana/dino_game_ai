@@ -1,7 +1,6 @@
 #!python3
-from Game import Constants
-import random
-from Game.graphics import *
+from Game.Modules import *
+
 
 # Our Player Class
 class Obstacle:
@@ -18,12 +17,8 @@ class Obstacle:
         self.x = Constants.WINDOW_WIDTH + random.randrange(0, Constants.WINDOW_HEIGHT * 1.5)
 
     # This is handled in the obstacle manager now
-    # def update(self):
-    #     self.x -= self.speed
-
-    #     # Check if Obstacle is off-screen
-    #     if (self.x <= -self.width):
-    #         self.randomize_x()
+    def update(self):
+        pass
 
     def draw(self, win):
         self.sprite.draw(win)

@@ -1,14 +1,52 @@
 #!python3
-from Game import game
-
+from Game.game import *
+# from AI import *
 
 
 def __main__():
-    # Define Game Settings
-    display_graphics = True    # Set to 0 if you don't want to display the graphics
+    # Game Settings
+    display_graphics = True
     gamemode = 'human'
     
-    game.play(gamemode, display_graphics)
+    # Define our window
+    if display_graphics:
+        win = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        win.setBackground('white')
+    else:
+        win = None
+
+    game = Game(win, gamemode, display_graphics)
+    # game.play(gamemode, display_graphics)
+
+    game.create_game_objects()
+
+    game.load_sprites()
+
+    game.start_timer()
+
+    # Game Loop
+    while True:
+        game.get_input()
+        # game.get_input(ai.next_input)
+
+        game.update_objects()
+
+        game.update_sprites()
+
+        if (game.over):
+            game.quit()
+            break
+
+        # ai.get_state(game.get_game_objects())
+
+        # ai.update_state()
+
+        # ai.draw_state()
+
+        # ai_input = ai.predict()
+
+    if (win):
+        win.close()
 
 
 if __name__ == '__main__':
