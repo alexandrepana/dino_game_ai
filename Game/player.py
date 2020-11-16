@@ -1,6 +1,6 @@
 #!python3
-import Constants
-from graphics import *
+from Game import Constants
+from Game.graphics import *
 
 # Our Player Class
 class Player:

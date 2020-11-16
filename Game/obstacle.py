@@ -1,7 +1,7 @@
 #!python3
-import Constants
+from Game import Constants
 import random
-from graphics import *
+from Game.graphics import *
 
 # Our Player Class
 class Obstacle:

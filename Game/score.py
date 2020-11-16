@@ -1,7 +1,7 @@
 #!python3
-import Constants
+from Game import Constants
 import time
-from graphics import *
+from Game.graphics import *
 
 class Score:
     def __init__(self):

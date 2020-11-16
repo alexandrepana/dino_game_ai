@@ -2,28 +2,31 @@
 
 import keyboard
 import time
-import Constants
-from graphics import *
-from player import *
-from obstacle import *
-from score import *
+from Game import Constants
+from Game.graphics import *
+from Game.player import *
+from Game.obstacle import *
+from Game.score import *
+from Game.ground import *
 
 
-def main():
-    display_graphics = 1    # Set to false if you don't want to display the graphics
+def play(gamemode="human", display_graphics=True):
     if display_graphics:
         win = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         win.setBackground('white')
     
+    # Define our Game Objects
     dino = Player()
     obstacle_manager = Obstacle_Manager()
     score = Score()
+    ground = Ground()
 
     # Load Sprites
     if display_graphics:
         obstacle_manager.draw(win)
         dino.draw(win)
         score.draw(win)
+        ground.draw(win)
 
 
     # Game Loop
@@ -37,6 +40,8 @@ def main():
                 dino.reset()
                 score.reset()
                 obstacle_manager.reset()
+            elif keyboard.is_pressed('q'):
+                break
         except:
             print('!!! ERROR !!!: something went wrong in keyboard section.')
 
@@ -55,11 +60,5 @@ def main():
         
     # Game Over
     win.close()
-    
-    
-        
-
-
-
-main()
-
+    print(f'Your final score is: {score.value}')
+    print(f'You passed {obstacle_manager.passed} obstacles.')
