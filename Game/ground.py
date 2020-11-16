@@ -2,7 +2,7 @@
 from Game.Modules import *
 
 
-class Ground:
+class Ground(Game_Object):
     def __init__(self):
         self.x1 = 0
         self.y1 = Constants.GROUND

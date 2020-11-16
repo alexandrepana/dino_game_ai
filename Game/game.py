@@ -10,11 +10,13 @@ class Game:
         self.window = window
         self.over = 0
         self.just_collided = False
+        self.high_score = 0
         
         # Game Objects
         self.player = Player()
         self.obstacle_manager = Obstacle_Manager()
         self.score = Score()
+        self.high_score = High_Score()
         self.ground = Ground()
 
         # Possible Actions
@@ -32,14 +34,15 @@ class Game:
     
     # PROGRAM THIS
     def get_game_objects(self):
-        pass
-        return self.game_objects
+        return (self.player, self.obstacle_manager, self.score, self.ground)
 
     def load_sprites(self):
-        self.player.draw(self.window)
-        self.obstacle_manager.draw(self.window)
-        self.score.draw(self.window)
-        self.ground.draw(self.window)
+        if (self.window):
+            self.player.draw(self.window)
+            self.obstacle_manager.draw(self.window)
+            self.score.draw(self.window)
+            self.high_score.draw(self.window)
+            self.ground.draw(self.window)
 
     # Start the score timer
     def start_timer(self):
@@ -68,6 +71,7 @@ class Game:
         self.player.update()
         self.obstacle_manager.update()
         self.score.update()
+        self.high_score.update(self.score.value)
         self.ground.update()
         self.check_collisions()
     
@@ -76,6 +80,7 @@ class Game:
             self.player.update_draw()
             self.obstacle_manager.update_draw()
             self.score.update_draw()
+            self.high_score.update_draw()
             self.ground.update_draw()
             time.sleep(Constants.DELAY)     # Should we only delay if we're displaying graphics?
     
@@ -95,5 +100,11 @@ class Game:
                 self.player.x < obstacle.x + obstacle.width and
                 self.player.y + self.player.height > obstacle.y and
                 self.player.y < obstacle.y + obstacle.height):
-                self.player.sprite.setFill('red')
+                self.player.change_colour()
                 self.just_collided = True
+                self.score.reset()
+                self.obstacle_manager.reset()
+    
+    def update_high_score(self):
+        if (self.score.value > self.high_score):
+            self.high_score = self.score.value

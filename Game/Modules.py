@@ -10,4 +10,3 @@ from Game.player import *
 from Game.obstacle import *
 from Game.score import *
 from Game.ground import *
-from Game.game_object_holder import *

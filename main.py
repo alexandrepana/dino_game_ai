@@ -8,17 +8,19 @@ def __main__():
     display_graphics = True
     gamemode = 'human'
     
-    # Define our window
+    # Define our windows
     if display_graphics:
-        win = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
-        win.setBackground('white')
+        game_window = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window.setCoords(0, 0 ,Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window.setBackground('white')
+
+        # ai_window = GraphWin('Stats', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        # ai_window.setBackground('grey')
     else:
-        win = None
+        game_window = None
+        # ai_window = None
 
-    game = Game(win, gamemode, display_graphics)
-    # game.play(gamemode, display_graphics)
-
-    # game.create_game_objects()
+    game = Game(game_window, gamemode, display_graphics)
 
     game.load_sprites()
 
@@ -49,8 +51,8 @@ def __main__():
 
         # ai_input = ai.predict()
 
-    if (win):
-        win.close()
+    if (game_window):
+        game_window.close()
 
 
 if __name__ == '__main__':

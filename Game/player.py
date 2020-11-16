@@ -26,8 +26,6 @@ class Player(Game_Object):
         else:
             self.y_vel -= self.gravity
             self.grounded = 0
-        
-        # self.check_collisions(obstacle_manager)
 
     def jump(self):
         self.y_vel = self.jump_speed
@@ -36,18 +34,13 @@ class Player(Game_Object):
         self.sprite.draw(win)
 
     def update_draw(self):
-        # These are specifically for rectangles
         old_corner1 = self.sprite.getP1()
-        # old_corner2 = self.sprite.getP2()
         self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())
     
-    # def check_collisions(self, obstacle_manager):
-    #     for obstacle in obstacle_manager.obstacles:
-    #         if (self.x + self.width > obstacle.x and
-    #             self.x < obstacle.x + obstacle.width and
-    #             self.y + self.height > obstacle.y and
-    #             self.y < obstacle.y + obstacle.height):
-    #             self.sprite.setFill('red')
+    def change_colour(self, colour=None):
+        if (not colour):
+            colour = [random.randrange(0, 100), random.randrange(200, 255), random.randrange(50, 150)]
+        self.sprite.setFill(color_rgb(colour[0], colour[1], colour[2]))
     
     def reset(self):
         self.sprite.setFill('green')

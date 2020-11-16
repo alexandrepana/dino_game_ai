@@ -3,12 +3,12 @@ from Game.Modules import *
 
 
 # Our Player Class
-class Obstacle:
+class Obstacle(Game_Object):
     def __init__(self):
         self.randomize_x()
         self.y = Constants.GROUND
-        self.height = 20
-        self.width = 20
+        self.height = 30
+        self.width = 25
         self.speed = 16
         self.sprite = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
         self.sprite.setFill = 'red'
@@ -26,14 +26,16 @@ class Obstacle:
     def update_draw(self):
         # These are specifically for rectangles
         old_corner1 = self.sprite.getP1()
-        # old_corner2 = self.sprite.getP2()
         self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())
+    
+    def reset(self):
+        pass
 
 
-class Obstacle_Manager:
+class Obstacle_Manager(Game_Object):
     def __init__(self):
         self.obstacles = [ Obstacle() for i in range(Constants.NUM_OBSTACLES) ]
-        self.min_obstacle_dist = 65
+        self.min_obstacle_dist = 70
         self.passed = 0
         self.passed_string = f'Obstacles Passed: {self.passed}'
         self.sprite = Text(Point(Constants.WINDOW_WIDTH / 2 - 15, 25), self.passed_string)
