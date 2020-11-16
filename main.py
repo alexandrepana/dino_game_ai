@@ -1,6 +1,6 @@
 #!python3
 from Game.game import *
-# from AI import *
+from AI.ai import *
 
 
 def __main__():
@@ -33,6 +33,8 @@ def __main__():
 
         game.update_sprites()
 
+        reward = game.just_collided
+
         if (game.over):
             game.quit()
             break
@@ -40,6 +42,8 @@ def __main__():
         # ai.get_state(game.get_game_objects())
 
         # ai.update_state()
+
+        # ai.update_policy(reward)
 
         # ai.draw_state()
 

@@ -8,6 +8,7 @@ class Game:
         self.gamemode = gamemode
         self.window = window
         self.over = 0
+        self.just_collided = False
         self.game_objects = {}
         self.game_actions = {
             'jump': self.player_jump,
@@ -28,6 +29,9 @@ class Game:
         self.game_objects['score'] = Score()
         self.game_objects['ground'] = Ground()
     
+    def get_game_objects(self):
+        return self.game_objects
+
     def load_sprites(self):
         if (self.window):
             for game_object in self.game_objects.values():
@@ -58,6 +62,7 @@ class Game:
     def update_objects(self):
         for game_object in self.game_objects.values():
             game_object.update()
+        self.check_collisions()
     
     def update_sprites(self):
         if (self.window):
@@ -72,49 +77,12 @@ class Game:
     def quit(self):
         print(f'Your final score is: {self.game_objects["score"].value}')
         print(f'You passed {self.game_objects["obstacle_manager"].passed} obstacles.')
-
-
-
-
-# def play(gamemode="human", display_graphics=True, window):
     
-#     # Define our Game Objects
-    
-
-#     # Load Sprites
-#     if display_graphics:
-#         obstacle_manager.draw(window)
-#         dino.draw(window)
-#         score.draw(window)
-#         ground.draw(window)
-
-
-#     # Game Loop
-#     while True:
-#         # Get Player Input
-#         try:
-#             if (keyboard.is_pressed('w') or keyboard.is_pressed('space')) and dino.grounded:  # Jump
-#                 dino.jump()
-#             elif keyboard.is_pressed('r'):                  # Reset game
-#                 dino.reset()
-#                 score.reset()
-#                 obstacle_manager.reset()
-#             elif keyboard.is_pressed('q'):
-#                 break
-#         except:
-#             print('!!! ERROR !!!: something went wrong in keyboard section.')
-
-#         # Game Updates
-#         dino.update(obstacle_manager)
-#         obstacle_manager.update()
-#         score.update()
-
-#         # Sprite Updates
-#         if display_graphics:
-#             obstacle_manager.update_draw()
-#             dino.update_draw()
-#             score.update_draw()
-#             time.sleep(Constants.DELAY)     # Should we only delay if we're displaying graphics?
-            
-        
-#     # Game Over
+    def check_collisions(self):
+        for obstacle in self.game_objects['obstacle_manager'].obstacles:
+            if (self.game_objects['player'].x + self.game_objects['player'].width > obstacle.x and
+                self.game_objects['player'].x < obstacle.x + obstacle.width and
+                self.game_objects['player'].y + self.game_objects['player'].height > obstacle.y and
+                self.game_objects['player'].y < obstacle.y + obstacle.height):
+                self.game_objects['player'].sprite.setFill('red')
+                self.just_collided = True
