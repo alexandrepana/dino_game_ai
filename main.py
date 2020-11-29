@@ -1,6 +1,6 @@
 #!python3
 from Game.game import *
-from AI.ai import *
+# from AI.ai import *
 
 
 def __main__():
@@ -20,22 +20,27 @@ def __main__():
         game_window = None
         # ai_window = None
 
+    # Start up the game
     game = Game(game_window, gamemode, display_graphics)
-
     game.load_sprites()
-
     game.start_timer()
+
+    # Start up AI
+    # ai = AI()
 
     # Game Loop
     while True:
-        game.get_input()
-        # game.get_input(ai.next_input)
+        # Get the action to perform
+        if (gamemode == 'human'):
+            game.get_input()
+        elif (gamemode == 'ai'):
+            game.get_input(ai.next_input)
 
         game.update_objects()
 
         game.update_sprites()
 
-        reward = game.just_collided
+        # reward = game.just_collided
 
         if (game.over):
             game.quit()
