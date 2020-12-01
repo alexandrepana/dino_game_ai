@@ -1,5 +1,6 @@
 #!python3
 from Game.game import *
+import time
 # from AI.ai import *
 
 
@@ -7,11 +8,16 @@ def __main__():
     # Game Settings
     display_graphics = True
     gamemode = 'human'
-    
+    algorithm = 'sarsa'  # 'qlearning'
+    episodes = 1
+    alpha = 0.1
+
     # Define our windows
     if display_graphics:
-        game_window = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
-        game_window.setCoords(0, 0 ,Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window = GraphWin(
+            'Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window.setCoords(0, 0, Constants.WINDOW_WIDTH,
+                              Constants.WINDOW_HEIGHT)
         game_window.setBackground('white')
 
         # ai_window = GraphWin('Stats', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
@@ -25,39 +31,63 @@ def __main__():
     game.load_sprites()
     game.start_timer()
 
-    # Start up AI
-    # ai = AI()
-
-    # Game Loop
-    while True:
-        # Get the action to perform
-        if (gamemode == 'human'):
+    if (gamemode == 'human'):
+        while True:
+            # Get the action to perform
             game.get_input()
-        elif (gamemode == 'ai'):
-            game.get_input(ai.next_input)
+            game.update_objects()
+            game.update_sprites()
 
-        game.update_objects()
+            if (game.over):
+                game.quit()
+                break
 
-        game.update_sprites()
+        if (game_window):
+            game_window.close()
 
-        # reward = game.just_collided
+    elif (gamemode == 'ai' and algorithm == 'sarsa'):
+        '''
+        # Q-LEARNING ALGORITHM
 
-        if (game.over):
-            game.quit()
-            break
+        # Algorithm Parameters: step size alpha (0 or 1), small e (epsilon)
+        # Initialize Q(s, a) for all states, and actions available at state s,
+        #   arbitrarily except that Q(terminal) = 0
 
-        # ai.get_state(game.get_game_objects())
+        # loop for each episode:
+        #   Initialize S
+        #   Choose A from S using policy derived from Q (e-greedy)
+        #   loop for each step of episode: (while S is not termial)
+        #       take action A, observe R, S'
+        #       Choose A' from S' using policy derived from Q (e-greedy)
+        #       Q(S, A) = Q(S, A) + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
+        #       S = S'
+        #       A = A'
+        '''
 
-        # ai.update_state()
+        # for i in range(episodes):
+        # S = state()
+        # A = choose action from policy probabilities (e-greedy)
+        # while time < some threshold:
+        #   R = get reward for taking action
+        #   S' = next state
+        #   Q(S, A) = Q(S, A) + + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
 
-        # ai.update_policy(reward)
+    elif (gamemode == 'ai' and algorithm == 'qlearning'):
+        '''
+        # Q-LEARNING ALGORITHM
 
-        # ai.draw_state()
+        # Algorithm Parameters: step size alpha (0 or 1), small e (epsilon)
+        # Initialize Q(s, a) for all states, and actions available at state s,
+        #   arbitrarily except that Q(terminal) = 0
 
-        # ai_input = ai.predict()
-
-    if (game_window):
-        game_window.close()
+        # loop for each episode:
+        #   Initialize s
+        #   loop for each step of episode: (while S is not terminal)
+        #       choose A from S using policy derived from Q (e-greedy)
+        #       take action A, observe R, S'
+        #       Q(S, A) = Q(S, A) + alpha[R + learning_rate(max(Q(S', a))) - Q(S, A)]
+        #       S = S'
+        '''
 
 
 if __name__ == '__main__':
