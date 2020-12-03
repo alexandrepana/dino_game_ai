@@ -1,15 +1,26 @@
 #!python3
 from Game.game import *
 import time
-from AI.policy import *
+# from AI.policy import *
+from AI.state import *
 import random
 
+class Policy:
+    def __init__(self):
+        self.jumpProb = 0.5
+        self.continueProb = 0.5
+
+    def getValues(self):
+        return (self.jumpProb, self.continueProb)
 
 def __main__():
     # Game Settings
     display_graphics = True
-    gamemode = 'human'
-    algorithm = 'sarsa'  # 'qlearning'
+    # gamemode = 'human'
+    gamemode = 'ai'
+    algorithm = 'sarsa'
+    # algorithm = 'qlearning'
+
     episodes = 1
     alpha = 0.1
     learning_rate = 0.5
@@ -65,30 +76,30 @@ def __main__():
         #       S = S'
         #       A = A'
         '''
-
-        # policy space:
-        #   key: distance to next obstacle (none = no obsacles on screen)
-        policy = {}
-        policy["none"] = [0.5, 0.5]
+        distances = 10
+        p = States(distances)
 
         # 0: jump
         # 1: continue
         actions = [0, 1]
 
-        for i in range(episodes):
-            S = str(game.player.x - game.obstacle_manager.obstacles[0])
+        # TODO: initialize the policy (with the default policy for each possible state)
+        #   - should be all the distances that satisfy:
+        #       next object in front of dino (once an object passes the dino, it doesn't qualify)
 
-            # if the distance is not already been visited add it into the policy (dynamically instantiate policy)
-            if not (S in policy.keys()):
-                policy[S] = [0.5, 0.5]
-            A = random.choice(actions) # A = random.choice(choices, weights=policy[S], k=1)
+        for i in range(episodes):
+            distance = game.player.x - game.obstacle_manager.obstacles[0]
+            onGround = True
+            S = p.getState(distance, onGround)
+
+            A = random.choices(actions, weights=S.policy, k=1)
 
             steps = 10000
             for j in range(steps):
-                S2 = 0 # simulation of S'
-                R = 1 # reward for going to next state
-                A2 = random.choice(actions) # A2 = random.choice(actions, weights=policy[S2], k=1)
-                policy[S][A] = policy[S][A] + alpha*(R + learning_rate*(policy[S2, A2]) - policy[S][A])
+                S2 = p.getNextState(S, A)
+                R = S2.reward
+                A2 = random.choices(actions, weights=S2.policy, k=1)
+                S.policy[A] = S.policy[A] + alpha*(R + learning_rate*(S2.policy(A2)) - S.policy[A])
                 S = S2
                 A = A2
 
@@ -109,30 +120,30 @@ def __main__():
         #       S = S'
         '''
 
-        # policy space:
-        #   key: distance to next obstacle (none = no obsacles on screen)
-        policy = {}
-        policy["none"] = [0.5, 0.5]
+        # # policy space:
+        # #   key: distance to next obstacle (none = no obsacles on screen)
+        # policy = {}
+        # policy["none"] = [0.5, 0.5]
 
-        # 0: jump
-        # 1: continue
-        actions = [0, 1]
+        # # 0: jump
+        # # 1: continue
+        # actions = [0, 1]
 
-        for i in range(episodes):
-            S = str(game.player.x - game.obstacle_manager.obstacles[0])
+        # for i in range(episodes):
+        #     S = str(game.player.x - game.obstacle_manager.obstacles[0])
 
-            # if the distance is not already been visited add it into the policy (dynamically instantiate policy)
-            if not (S in policy.keys()):
-                policy[S] = [0.5, 0.5]
+        #     # if the distance is not already been visited add it into the policy (dynamically instantiate policy)
+        #     if not (S in policy.keys()):
+        #         policy[S] = [0.5, 0.5]
 
-            steps = 10000
-            for j in range(steps):
-                A = random.choice(actions) # A = random.choice(choices, weights=policy[S], k=1)
-                S2 = 0 # simulation of S'
-                R = 1 # reward for going to next state
-                A2 = 0 # get best actioin for policy[S2]
-                policy[S][A] = policy[S][A] + alpha*(R + learning_rate*(policy[S2, A2]) - policy[S][A])
-                S = S2
+        #     steps = 10000
+        #     for j in range(steps):
+        #         A = random.choices(actions, weights=policy[S], k=1)
+        #         S2 = 0 # simulation of S'
+        #         R = 1 # reward for going to next state
+        #         A2 = 0 # get best actioin for policy[S2]
+        #         policy[S][A] = policy[S][A] + alpha*(R + learning_rate*(policy[S2][A2]) - policy[S][A])
+        #         S = S2
 
 
 if __name__ == '__main__':
