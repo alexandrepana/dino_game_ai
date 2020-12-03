@@ -6,4 +6,10 @@ class Policy:
         self.continueProb = 0.5
 
     def getValues(self):
-        return (self.jumpProb, self.continueProb)
+        return [self.jumpProb, self.continueProb]
+
+    def update(self, action, newValue):
+        if (action == 0):
+            self.jumpProb = newValue
+        elif (action == 1):
+            self.continueProb = newValue

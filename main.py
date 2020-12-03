@@ -5,6 +5,7 @@ import time
 from AI.state import *
 import random
 
+
 class Policy:
     def __init__(self):
         self.jumpProb = 0.5
@@ -13,9 +14,10 @@ class Policy:
     def getValues(self):
         return (self.jumpProb, self.continueProb)
 
+
 def __main__():
     # Game Settings
-    display_graphics = True
+    display_graphics = False
     # gamemode = 'human'
     gamemode = 'ai'
     algorithm = 'sarsa'
@@ -24,6 +26,12 @@ def __main__():
     episodes = 1
     alpha = 0.1
     learning_rate = 0.5
+
+    # 0: jump
+    # 1: continue
+    actions = [0, 1]
+    # distances = [-(Constants.UNIT_SIZE*i) for i in range(80)]
+    distances = []
 
     # Define our windows
     if display_graphics:
@@ -76,32 +84,37 @@ def __main__():
         #       S = S'
         #       A = A'
         '''
-        distances = 10
         p = States(distances)
 
-        # 0: jump
-        # 1: continue
-        actions = [0, 1]
-
-        # TODO: initialize the policy (with the default policy for each possible state)
-        #   - should be all the distances that satisfy:
-        #       next object in front of dino (once an object passes the dino, it doesn't qualify)
-
         for i in range(episodes):
-            distance = game.player.x - game.obstacle_manager.obstacles[0]
+            distance = game.player.x - game.obstacle_manager.obstacles[0].x
             onGround = True
             S = p.getState(distance, onGround)
 
-            A = random.choices(actions, weights=S.policy, k=1)
+            A = random.choices(actions, weights=S.policy.getValues(), k=1)[0]
 
-            steps = 10000
+            steps = 5
             for j in range(steps):
+                print("S:", S.policy.getValues())
+                print("DISTANCE:", S.distance)
                 S2 = p.getNextState(S, A)
+                print("S':", S2.policy.getValues())
                 R = S2.reward
-                A2 = random.choices(actions, weights=S2.policy, k=1)
-                S.policy[A] = S.policy[A] + alpha*(R + learning_rate*(S2.policy(A2)) - S.policy[A])
+                A2 = random.choices(
+                    actions, weights=S2.policy.getValues(), k=1)[0]
+
+                updatedValue = S.policy.getValues()[A]
+                updatedValue += alpha * \
+                    (R + learning_rate * (S2.policy.getValues()
+                                          [A2]) - S.policy.getValues()[A])
+                S.policy.update(A, updatedValue)
+                print("S (updated):", S.policy.getValues())
+
                 S = S2
                 A = A2
+
+                game.update_objects()
+                game.update_sprites()
 
     elif (gamemode == 'ai' and algorithm == 'qlearning'):
         '''
@@ -119,15 +132,29 @@ def __main__():
         #       Q(S, A) = Q(S, A) + alpha[R + learning_rate(max(Q(S', a))) - Q(S, A)]
         #       S = S'
         '''
+        p = States(distances)
 
-        # # policy space:
-        # #   key: distance to next obstacle (none = no obsacles on screen)
-        # policy = {}
-        # policy["none"] = [0.5, 0.5]
+        for i in range(episodes):
+            distance = game.player.x - game.obstacle_manager.obstacles[0].x
+            onGround = True
+            S = p.getState(distance, onGround)
 
-        # # 0: jump
-        # # 1: continue
-        # actions = [0, 1]
+            steps = 10000
+            for j in range(steps):
+                A = random.choices(
+                    actions, weights=S.policy.getValues(), k=1)[0]
+                S2 = p.getNextState(S, A)
+                R = S2.reward
+                A2 = random.choices(
+                    actions, weights=S2.policy.getValues(), k=1)[0]  # TODO: get the best action available here max(policy[S2])
+
+                updatedValue = S.policy.getValues()[A]
+                updatedValue += alpha * \
+                    (R + learning_rate * (S2.policy.getValues()
+                                          [A2]) - S.policy.getValues()[A])
+                S.policy.update(A, updatedValue)
+
+                S = S2
 
         # for i in range(episodes):
         #     S = str(game.player.x - game.obstacle_manager.obstacles[0])

@@ -11,9 +11,10 @@ class Player(Game_Object):
         self.jump_speed = 20
         self.gravity = 2.3
         self.grounded = 1
-        self.height = 15
-        self.width = 10
-        self.sprite = Rectangle(Point(self.x, self.y), Point(self.x + self.width, self.y + self.height))
+        self.height = Constants.UNIT_SIZE
+        self.width = Constants.UNIT_SIZE
+        self.sprite = Rectangle(Point(self.x, self.y), Point(
+            self.x + self.width, self.y + self.height))
         self.sprite.setFill('green')
 
     def update(self):
@@ -29,18 +30,20 @@ class Player(Game_Object):
 
     def jump(self):
         self.y_vel = self.jump_speed
-    
+
     def draw(self, win):
         self.sprite.draw(win)
 
     def update_draw(self):
         old_corner1 = self.sprite.getP1()
-        self.sprite.move(self.x - old_corner1.getX(), self.y - old_corner1.getY())
-    
+        self.sprite.move(self.x - old_corner1.getX(),
+                         self.y - old_corner1.getY())
+
     def change_colour(self, colour=None):
         if (not colour):
-            colour = [random.randrange(0, 100), random.randrange(200, 255), random.randrange(50, 150)]
+            colour = [random.randrange(0, 100), random.randrange(
+                200, 255), random.randrange(50, 150)]
         self.sprite.setFill(color_rgb(colour[0], colour[1], colour[2]))
-    
+
     def reset(self):
         self.sprite.setFill('green')

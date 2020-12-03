@@ -7,16 +7,17 @@ class Obstacle(Game_Object):
     def __init__(self):
         self.randomize_x()
         self.y = Constants.GROUND
-        self.height = 30
-        self.width = 25
-        self.speed = self.width
+        self.height = Constants.UNIT_SIZE
+        self.width = Constants.UNIT_SIZE
+        self.speed = Constants.UNIT_SIZE
         self.sprite = Rectangle(Point(self.x, self.y), Point(
             self.x + self.width, self.y + self.height))
         self.sprite.setFill = 'red'
 
     def randomize_x(self):
         self.x = Constants.WINDOW_WIDTH + \
-            random.randrange(0, Constants.WINDOW_HEIGHT * 1.5)
+            random.randrange(0, Constants.WINDOW_HEIGHT *
+                             1.5, Constants.UNIT_SIZE)
 
     # This is handled in the obstacle manager now
     def update(self):
