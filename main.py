@@ -17,15 +17,15 @@ class Policy:
 
 def __main__():
     # Game Settings
-    display_graphics = True
+    display_graphics = False
     # gamemode = 'human'
     gamemode = 'ai'
-    # algorithm = 'sarsa'
-    algorithm = 'qlearning'
+    algorithm = 'sarsa'
+    # algorithm = 'qlearning'
 
-    episodes = 1
-    alpha = 0.1
-    learning_rate = 0.5
+    episodes = 200
+    a = 0.1
+    r = 0.1
 
     # 0: jump
     # 1: continue
@@ -87,6 +87,8 @@ def __main__():
         p = States(distances)
 
         for i in range(episodes):
+            print("EPISODE:", i)
+            game.obstacle_manager.passed = 0
             distance = game.player.x - game.obstacle_manager.obstacles[0].x
             onGround = game.player.grounded
 
@@ -98,7 +100,7 @@ def __main__():
             steps = 5000
             # loop for each step of episode (while S is not terminal)
             # for j in range(steps):
-            while game.obstacle_manager.passed < 25:
+            while game.obstacle_manager.passed < 20:
                 # take action A
                 if (A == 0):
                     game.get_input('jump')
@@ -111,9 +113,9 @@ def __main__():
 
                 R = 0
                 if (distance > 0 and game.player.grounded == 1):
-                    R = -10
+                    R = -100
                 elif (distance > 0 and game.player.grounded == 0):
-                    R = 10
+                    R = 100
 
                 # Choose A' from S' using policy derived from Q (e-greedy)
                 A2 = random.choices(
@@ -121,9 +123,9 @@ def __main__():
 
                 # Q(S, A) = Q(S, A) + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
                 updatedValue = S.policy.getValues()[A]
-                updatedValue += alpha * \
-                    (R + learning_rate * (S2.policy.getValues()
-                                          [A2]) - S.policy.getValues()[A])
+                updatedValue += a * \
+                    (R + r * (S2.policy.getValues()
+                              [A2]) - S.policy.getValues()[A])
                 S.policy.update(A, updatedValue)
 
                 # S = S'
@@ -192,9 +194,9 @@ def __main__():
 
                 # Q(S, A) = Q(S, A) + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
                 updatedValue = S.policy.getValues()[A]
-                updatedValue += alpha * \
-                    (R + learning_rate * (S2.policy.getValues()
-                                          [A2]) - S.policy.getValues()[A])
+                updatedValue += a * \
+                    (R + r * (S2.policy.getValues()
+                              [A2]) - S.policy.getValues()[A])
                 S.policy.update(A, updatedValue)
 
                 # S = S'
