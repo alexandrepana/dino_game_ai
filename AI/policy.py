@@ -2,8 +2,8 @@
 
 class Policy:
     def __init__(self):
-        self.jumpProb = 0.5
-        self.continueProb = 0.5
+        self.jumpProb = 0.1
+        self.continueProb = 0.9
 
     def getValues(self):
         return [self.jumpProb, self.continueProb]
