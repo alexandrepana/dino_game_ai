@@ -59,6 +59,19 @@ class Obstacle_Manager(Game_Object):
                     if obstacle.x + obstacle.width > other_obstacle.x - self.min_obstacle_dist and obstacle.x < other_obstacle.x + other_obstacle.width + self.min_obstacle_dist:
                         valid_x = False
 
+    def simulateUpdate(self):
+        sims = self.obstacles
+
+        for sim in sims:
+            sim.x -= sim.speed
+
+            # Check of Obstacle is off-screen
+            if (sim.x <= -sim.width):
+                # sim.passed += 1
+                sim.randomize_x()
+
+        return sims
+
     def update(self):
         for obstacle in self.obstacles:
             obstacle.x -= obstacle.speed

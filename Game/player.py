@@ -17,6 +17,22 @@ class Player(Game_Object):
             self.x + self.width, self.y + self.height))
         self.sprite.setFill('green')
 
+    def simulateUpdate(self, action=1):
+        sim = Player()
+        if (action == 0):
+            sim.jump()
+        sim.y = self.y + self.y_vel
+
+        if (sim.y <= Constants.GROUND):
+            sim.y = Constants.GROUND
+            sim.y_vel = 0
+            sim.grounded = 1
+        else:
+            sim.y_vel -= self.gravity
+            sim.grounded = 0
+
+        return sim
+
     def update(self):
         self.y += self.y_vel
 

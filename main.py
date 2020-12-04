@@ -17,7 +17,7 @@ class Policy:
 
 def __main__():
     # Game Settings
-    display_graphics = False
+    display_graphics = True
     # gamemode = 'human'
     gamemode = 'ai'
     algorithm = 'sarsa'
@@ -88,33 +88,55 @@ def __main__():
 
         for i in range(episodes):
             distance = game.player.x - game.obstacle_manager.obstacles[0].x
-            onGround = True
-            S = p.getState(distance, onGround)
+            onGround = game.player.grounded
 
+            # Initialize S
+            S = p.getState(distance, onGround)
+            # Choose A from S using policy derived from Q
             A = random.choices(actions, weights=S.policy.getValues(), k=1)[0]
 
-            steps = 5
-            for j in range(steps):
-                print("S:", S.policy.getValues())
-                print("DISTANCE:", S.distance)
-                S2 = p.getNextState(S, A)
-                print("S':", S2.policy.getValues())
-                R = S2.reward
+            steps = 5000
+            # loop for each step of episode (while S is not terminal)
+            # for j in range(steps):
+            while game.obstacle_manager.passed < 25:
+                # take action A
+                if (A == 0):
+                    game.get_input('jump')
+
+                # observe R, S'
+                distance = game.player.x - game.obstacle_manager.obstacles[0].x
+                S2 = p.getState(distance, False)
+                if (game.player.grounded == 1):
+                    S2 = p.getState(distance, True)
+
+                R = 0
+                if (distance > 0 and game.player.grounded == 1):
+                    R = -1
+                if (distance > 0 and game.player.grounded == 0):
+                    R = 1
+
+                # Choose A' from S' using policy derived from Q (e-greedy)
                 A2 = random.choices(
                     actions, weights=S2.policy.getValues(), k=1)[0]
 
+                # Q(S, A) = Q(S, A) + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
                 updatedValue = S.policy.getValues()[A]
                 updatedValue += alpha * \
                     (R + learning_rate * (S2.policy.getValues()
                                           [A2]) - S.policy.getValues()[A])
                 S.policy.update(A, updatedValue)
-                print("S (updated):", S.policy.getValues())
 
+                # S = S'
                 S = S2
+                # A = A'
                 A = A2
 
                 game.update_objects()
                 game.update_sprites()
+
+        print("POLICY:")
+        for key in p.tStates.keys():
+            print(key, ": ", p.tStates[key].policy.getValues())
 
     elif (gamemode == 'ai' and algorithm == 'qlearning'):
         '''
