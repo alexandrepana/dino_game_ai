@@ -4,7 +4,7 @@ from Game.Modules import *
 
 
 class States:
-    def __init__(self, distances):
+    def __init__(self, distances=[]):
         self.tStates = {}
         self.fStates = {}
         # Should we have this stored here? like call getState with the distance and it will return the state we want?
