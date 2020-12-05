@@ -2,7 +2,6 @@
 from Game.game import *
 # from AI.ai import *
 
-
 def __main__():
     # Game Settings
     display_graphics = True
@@ -58,7 +57,6 @@ def __main__():
 
     if (game_window):
         game_window.close()
-
 
 if __name__ == '__main__':
     __main__()
