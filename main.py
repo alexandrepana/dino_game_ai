@@ -2,23 +2,18 @@
 from Game.game import *
 from AI.sarsa import Sarsa
 
-
-
 def __main__():
     # Game Settings
     display_graphics = True
     gamemode = 'human'
     
     # Ai sarsa settings
+    training = True
     epsilon = 0.1
     gamma = 0.85
     alpha = 0.95
-    thresholds = []
     jump = 0.2
     stay = 0.8
-    # partition the screen into state spaces
-    for x in range(10):
-        thresholds.append(Constants.WINDOW_WIDTH * x)
     
     # Define our windows
     if display_graphics:
@@ -33,36 +28,49 @@ def __main__():
     game.load_sprites()
     game.start_timer()
 
-    # Start up AI
-    ai = Sarsa(epsilon, gamma, alpha, thresholds, jump, stay)
+    # Initialize AI
+    ai = Sarsa(epsilon, gamma, alpha, jump, stay)
+    state1 = ai.get_state(game.get_game_objects[2].obstacles)
+    action1, index1 = ai.select_action(state1) # action is an input, index is how we access the value
+    reward = 0
 
     # Game Loop
     while True:
-        # Get the action to perform
+       
         if (gamemode == 'human'):
+            # Get the action to perform
             game.get_input()
         elif (gamemode == 'ai'):
-            game.get_input(ai.select())
+            # Input AI action
+            game.get_input(action1) # will only work if the player is grounded
 
+        # Update game
         game.update_objects()
-
         game.update_sprites()
 
-        # reward = game.just_collided
+        # if we hit an object make a large negative reward
+        if(game.just_collided):
+            reward -= 100
+        # if we dodged an object reward positive
+        elif(game.check_dodge):
+            reward += 10
+        
+        # Get next state action space
+        state2 = ai.get_state(game.get_game_objects[2].obstacles)
+        action2, index2 = ai.select_action(state2)
+
+        # Update ai
+        if(training): ai.update_policy(state1, index1, state2, index2, reward)
+
+        # Remember the original state if we are no longer grounded (target will be where we land)
+        if(game.player.grounded == 1):
+            # Update initial state action space
+            state1 = state2
+            action1 = action2
 
         if (game.over):
             game.quit()
             break
-
-        # ai.get_state(game.get_game_objects())
-
-        # ai.update_state()
-
-        # ai.update_policy(reward)
-
-        # ai.draw_state()
-
-        # ai_input = ai.predict()
 
     if (game_window):
         game_window.close()

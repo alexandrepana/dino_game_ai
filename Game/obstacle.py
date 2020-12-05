@@ -31,7 +31,6 @@ class Obstacle(Game_Object):
     def reset(self):
         pass
 
-
 class Obstacle_Manager(Game_Object):
     def __init__(self):
         self.obstacles = [ Obstacle() for i in range(Constants.NUM_OBSTACLES) ]

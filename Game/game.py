@@ -102,6 +102,16 @@ class Game:
                 self.just_collided = True
                 self.score.reset()
                 self.obstacle_manager.reset()
+
+    def check_dodge(self):
+        for obstacle in self.obstacle_manager.obstacles:
+            if (self.player.x + self.player.width > obstacle.x and
+                self.player.x < obstacle.x + obstacle.width and
+                self.player.y + self.player.height < obstacle.y and
+                self.player.y > obstacle.y + obstacle.height):
+                return True
+            else:
+                return False
     
     def update_high_score(self):
         if (self.score.value > self.high_score):
