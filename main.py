@@ -1,23 +1,22 @@
 #!python3
 from Game.game import *
-# from AI.ai import *
+from sarsa import Sarsa
+
+epsilon = 0.1
+thresholds = []
 
 def __main__():
     # Game Settings
     display_graphics = True
-    gamemode = 'human'
+    gamemode = 'ai'
     
     # Define our windows
     if display_graphics:
         game_window = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         game_window.setCoords(0, 0 ,Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
         game_window.setBackground('white')
-
-        # ai_window = GraphWin('Stats', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
-        # ai_window.setBackground('grey')
     else:
         game_window = None
-        # ai_window = None
 
     # Start up the game
     game = Game(game_window, gamemode, display_graphics)
@@ -25,7 +24,7 @@ def __main__():
     game.start_timer()
 
     # Start up AI
-    # ai = AI()
+    ai = Sarsa()
 
     # Game Loop
     while True:

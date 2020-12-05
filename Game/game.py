@@ -1,7 +1,5 @@
 #!python3
-
 from Game.Modules import *
-
 
 class Game:
     def __init__(self, window=None, gamemode="human", display_graphics=True):
