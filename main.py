@@ -31,9 +31,9 @@ def __main__():
     # Initialize AI
     ai = Sarsa(epsilon, gamma, alpha, jump, stay)
     state1 = ai.get_state(game.obstacle_manager.obstacles)
-    print(state1)
-    action1, index1 = ai.select_action(state1) # action is an input, index is how we access the value
+    action1 = ai.select_action(state1) # action is an input, index is how we access the value
     reward = 0
+    #print(index1)
 
     # Game Loop
     while (episodes > 0):
@@ -45,7 +45,7 @@ def __main__():
             game.get_input()
         elif (gamemode == 'ai'):
             # Input AI action
-            game.get_input(action1) # will only work if the player is grounded
+            if(action1 == 0): game.get_input("jump")
 
         # Update game
         game.update_objects()
@@ -62,10 +62,11 @@ def __main__():
         
         # Get next state action space
         state2 = ai.get_state(game.obstacle_manager.obstacles)
-        action2, index2 = ai.select_action(state2)
+        #print(index1)
+        action2 = ai.select_action(state2)
 
         # Update ai
-        if(training): ai.update_policy(state1, index1, state2, index2, reward)
+        if(training):ai.update_policy(state1, action1, state2, action2, reward)
 
         # Remember the original state if we are no longer grounded (target will be where we land)
         if(game.player.grounded == 1):

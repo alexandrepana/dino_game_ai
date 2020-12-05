@@ -14,9 +14,7 @@ class Sarsa():
     def initialize_policy(self):
         l = [False, True]
         keys = list(itertools.product(l, repeat=Constants.UNIT_SIZE)) # How many segments exist
-        print(len(keys))
         new_keys = remove_unused(keys, Constants.NUM_OBSTACLES)
-        print(len(new_keys))
 
         temp = {}
         for key in new_keys:
@@ -30,17 +28,16 @@ class Sarsa():
         x = random.random() # create random float between 0 - 1
 
         if (x > self.epsilon):
-            choice = self.policy[key].index((random.choice(self.policy[key])))
+            choice = int(self.policy[key].index((random.choice(self.policy[key]))))
         else:
-            choice = self.policy[key].index((max(self.policy[key])))
+            choice = int(self.policy[key].index((max(self.policy[key]))))
 
-        if(choice == 0): 
-            return ("jump", 0)
-        else:
-            return (None, 1)
+        return choice
 
     def update_policy(self, key1, index1, key2, index2, reward):
+        #print(index1)
         predict = self.policy[key1][index1]
+        #print(index2)
         target = reward + self.gamma * self.policy[key2][index2]
         self.policy[key1][index1] += self.alpha * (target - predict)
 
