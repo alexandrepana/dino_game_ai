@@ -17,7 +17,7 @@ def __main__():
     jump = 0.2
     stay = 0.8
     # partition the screen into state spaces
-    for x in range(0, 1, 0.1):
+    for x in range(10):
         thresholds.append(Constants.WINDOW_WIDTH * x)
     
     # Define our windows

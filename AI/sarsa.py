@@ -12,7 +12,7 @@ class Sarsa():
     def initialize(self):
         temp = {}
         for key in self.keys:
-            temp[key] = [False, self.d_jump, self.d_stay]
+            temp[key] = [self.d_jump, self.d_stay]
         return temp
 
     def select(self, key):
@@ -23,9 +23,6 @@ class Sarsa():
             return max(self.policy[key]).index
 
     def update(self, keys1, index, keys2, index2, reward):
-        
-        for key1 in keys1:
-            for key2
-            predict = self.policy[key][index]
-            target = reward + gamma * self.policy[key2][index2]
-            self.policy[key1][index] += alpha * (target - predict)
+        predict = self.policy[key][index]
+        target = reward + gamma * self.policy[key2][index2]
+        self.policy[key1][index] += alpha * (target - predict)
