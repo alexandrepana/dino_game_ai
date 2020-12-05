@@ -1,7 +1,8 @@
 #!python3
+import Constants
+from obstacle import Obstacle
 import random
 import itertools
-from .Game import Modules
 
 class Sarsa():
     def __init__(self, epsilon, gamma, alpha, default_jump, default_stay):
@@ -22,6 +23,9 @@ class Sarsa():
             temp[key] = [self.d_jump, self.d_stay]
         return temp
 
+    def give_policy(self, agent):
+        self.policy = agent
+        
     def select_action(self, key):
         x = random.random() # create random float between 0 - 1
         if (x > self.epsilon):

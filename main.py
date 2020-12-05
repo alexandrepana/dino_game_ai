@@ -1,6 +1,6 @@
 #!python3
 from Game.game import *
-from AI.sarsa import Sarsa
+from sarsa import Sarsa
 
 def __main__():
     # Game Settings
