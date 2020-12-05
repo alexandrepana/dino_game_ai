@@ -1,14 +1,24 @@
 #!python3
 from Game.game import *
-from sarsa import Sarsa
+from AI.sarsa import Sarsa
 
-epsilon = 0.1
-thresholds = []
+
 
 def __main__():
     # Game Settings
     display_graphics = True
-    gamemode = 'ai'
+    gamemode = 'human'
+    
+    # Ai sarsa settings
+    epsilon = 0.1
+    gamma = 0.85
+    alpha = 0.95
+    thresholds = []
+    jump = 0.2
+    stay = 0.8
+    # partition the screen into state spaces
+    for x in range(0, 1, 0.1):
+        thresholds.append(Constants.WINDOW_WIDTH * x)
     
     # Define our windows
     if display_graphics:
@@ -24,7 +34,7 @@ def __main__():
     game.start_timer()
 
     # Start up AI
-    ai = Sarsa(epsilon, thresholds)
+    ai = Sarsa(epsilon, gamma, alpha, thresholds, jump, stay)
 
     # Game Loop
     while True:
@@ -32,7 +42,7 @@ def __main__():
         if (gamemode == 'human'):
             game.get_input()
         elif (gamemode == 'ai'):
-            game.get_input(ai.select(object))
+            game.get_input(ai.select())
 
         game.update_objects()
 
