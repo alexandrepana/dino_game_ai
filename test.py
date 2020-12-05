@@ -36,4 +36,4 @@ stay = 0.8
 
 # Initialize AI
 ai = Sarsa(epsilon, gamma, alpha, jump, stay)
-ai.policy[tuple([False, False, False, False, False, False, False, False, False, False])]
+

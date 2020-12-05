@@ -5,7 +5,7 @@ from Game.Modules import *
 # Our Player Class
 class Player(Game_Object):
     def __init__(self):
-        self.x = 50
+        self.x = Constants.SPAWN
         self.y = Constants.GROUND
         self.y_vel = 0
         self.jump_speed = 20

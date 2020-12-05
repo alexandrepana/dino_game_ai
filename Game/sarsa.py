@@ -14,10 +14,12 @@ class Sarsa():
     def initialize_policy(self):
         l = [False, True]
         keys = list(itertools.product(l, repeat=Constants.UNIT_SIZE)) # How many segments exist
-        keys = remove_unused(keys, Constants.NUM_OBSTACLES)
+        print(len(keys))
+        new_keys = remove_unused(keys, Constants.NUM_OBSTACLES)
+        print(len(new_keys))
 
         temp = {}
-        for key in keys:
+        for key in new_keys:
             temp[key] = [self.d_jump, self.d_stay]
         return temp
 
@@ -48,7 +50,7 @@ class Sarsa():
     def get_state(self, obstacles):
         new_state = [False for i in range(Constants.UNIT_SIZE)]
         for obj in obstacles:
-            if(obj.x < Constants.WINDOW_WIDTH):
+            if(obj.x < Constants.WINDOW_WIDTH and obj.x > Constants.SPAWN):
                 new_state[closest_unit(obj.x)] = True
         return tuple(new_state)
 
@@ -57,18 +59,19 @@ class Sarsa():
             print(key, ": ", self.policy[key])
 
 def remove_unused(keys, max_num):
-    temp = keys
+    temp = keys[:]
     for key in keys:
         count = 0
         for val in key:
-            if(val): count+=1
-            if(count > 3):
-                temp.remove(key)
-                break
+            if(val):
+                count+=1
+                if(count > max_num):
+                    temp.remove(key)
+                    break
     return(temp)
 
 def closest_unit(num):
-    temp = float('%.1f'%(num/Constants.WINDOW_WIDTH))
+    temp = float('%.1f'%((num-Constants.SPAWN)/(Constants.WINDOW_WIDTH - Constants.SPAWN)))
     if(temp == 1): temp = 0.9
     index_finder = [ float('%.1f'%(i*(1/Constants.UNIT_SIZE))) for i in range(Constants.UNIT_SIZE)] # convert to string to remove floating point errors
     index = index_finder.index(temp)
