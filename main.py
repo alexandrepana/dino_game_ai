@@ -57,7 +57,6 @@ def __main__():
         elif(action1 == "jump"):
             reward -=10
         
-        
         # Get next state action space
         state2 = ai.get_state(game.obstacle_manager.obstacles)
         action2, index2 = ai.select_action(state2)
