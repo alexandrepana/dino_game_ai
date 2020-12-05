@@ -44,6 +44,7 @@ class Obstacle_Manager(Game_Object):
         self.passed_string = f'Obstacles Passed: {self.passed}'
         self.sprite = Text(Point(Constants.WINDOW_WIDTH /
                                  2 - 15, 25), self.passed_string)
+        self.obstacle_score = 0
 
         for obstacle in self.obstacles:
             self.randomize_x(obstacle)
@@ -94,4 +95,5 @@ class Obstacle_Manager(Game_Object):
     def reset(self):
         for obstacle in self.obstacles:
             self.randomize_x(obstacle)
+        self.obstacle_score = self.passed
         self.passed = 0
