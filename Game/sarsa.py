@@ -52,6 +52,10 @@ class Sarsa():
                 new_state[closest_unit(obj.x)] = True
         return tuple(new_state)
 
+    def print_policy(self):
+        for key in self.policy.keys():
+            print(key, ": ", self.policy[key])
+
 def remove_unused(keys, max_num):
     temp = keys
     for key in keys:

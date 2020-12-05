@@ -3,7 +3,7 @@ from Game.game import *
 
 def __main__():
     # Game Settings
-    display_graphics = True
+    display_graphics = False
     gamemode = 'ai'
     
     # Ai sarsa settings
@@ -13,6 +13,7 @@ def __main__():
     alpha = 0.95
     jump = 0.2
     stay = 0.8
+    episodes = 10000
     
     # Define our windows
     if display_graphics:
@@ -35,8 +36,10 @@ def __main__():
     reward = 0
 
     # Game Loop
-    while True:
+    while (episodes > 0):
        
+        episodes -= 1
+
         if (gamemode == 'human'):
             # Get the action to perform
             game.get_input()
@@ -74,6 +77,8 @@ def __main__():
             game.quit()
             break
 
+    ai.print_policy()
+    
     if (game_window):
         game_window.close()
 
