@@ -4,6 +4,7 @@ import time
 # from AI.policy import *
 from AI.state import *
 import random
+import matplotlib.pyplot as plt
 
 
 class Policy:
@@ -107,6 +108,11 @@ def __main__():
         episode_label = Text(Point(Constants.WINDOW_WIDTH /
             2 + 150, 25), "Episode: 0").draw(game_window)
 
+        # For graphing:
+        x = [] # Episodes
+        y = [] # Obstacles passed per episode
+
+
         for i in range(episodes):
             print("EPISODE:", i)
             episode_label.setText("Episode: " + str(i))
@@ -136,9 +142,7 @@ def __main__():
                 # take action A
                 if (A == 0):
                     game.get_input('jump')
-                    print("Jumping")
-                else:
-                    print("Continuing")
+
                 # observe R, S'
                 distance = game.player.x - game.obstacle_manager.obstacles[0].x
                 S2 = p.getState(distance, False)
@@ -180,6 +184,16 @@ def __main__():
 
                 game.update_objects()
                 game.update_sprites()
+            
+            # Graphing
+            y.append(game.obstacle_manager.obstacle_score)
+            x.append(i)
+
+            fig, ax = plt.subplots()
+            ax.plot(x,y, '-')
+            ax.set_xlabel("Episodes")
+            ax.set_ylabel("Steps per Episode")
+            fig.savefig("GRAPH.jpg")
 
         print("POLICY:")
         for key in p.tStates.keys():
