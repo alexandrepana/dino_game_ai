@@ -19,3 +19,6 @@ class Sarsa():
             return random.choice(self.policy[key]).index
         else:
             return max(self.policy[key]).index
+
+    def update(self, key, index, reward):
+        self.policy[key][0] += reward
