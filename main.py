@@ -24,7 +24,7 @@ def __main__():
     game.start_timer()
 
     # Start up AI
-    ai = Sarsa()
+    ai = Sarsa(epsilon, thresholds)
 
     # Game Loop
     while True:
@@ -32,7 +32,7 @@ def __main__():
         if (gamemode == 'human'):
             game.get_input()
         elif (gamemode == 'ai'):
-            game.get_input(ai.next_input)
+            game.get_input(ai.select(object))
 
         game.update_objects()
 
