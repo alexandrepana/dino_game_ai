@@ -1,11 +1,10 @@
 #!python3
 from Game.game import *
-from sarsa import Sarsa
 
 def __main__():
     # Game Settings
     display_graphics = True
-    gamemode = 'human'
+    gamemode = 'ai'
     
     # Ai sarsa settings
     training = True
@@ -30,7 +29,8 @@ def __main__():
 
     # Initialize AI
     ai = Sarsa(epsilon, gamma, alpha, jump, stay)
-    state1 = ai.get_state(game.get_game_objects[2].obstacles)
+    state1 = ai.get_state(game.obstacle_manager.obstacles)
+    print(state1)
     action1, index1 = ai.select_action(state1) # action is an input, index is how we access the value
     reward = 0
 
@@ -56,7 +56,7 @@ def __main__():
             reward += 10
         
         # Get next state action space
-        state2 = ai.get_state(game.get_game_objects[2].obstacles)
+        state2 = ai.get_state(game.obstacle_manager.obstacles)
         action2, index2 = ai.select_action(state2)
 
         # Update ai

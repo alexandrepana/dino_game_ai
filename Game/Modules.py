@@ -1,5 +1,4 @@
 #!python3
-
 import keyboard
 import time
 import random
@@ -10,3 +9,4 @@ from Game.player import *
 from Game.obstacle import *
 from Game.score import *
 from Game.ground import *
+from Game.sarsa import Sarsa
