@@ -53,7 +53,10 @@ def __main__():
             reward -= 100
         # if we dodged an object reward positive
         elif(game.check_dodge):
-            reward += 10
+            reward += 20
+        elif(action1 == "jump"):
+            reward -=10
+        
         
         # Get next state action space
         state2 = ai.get_state(game.obstacle_manager.obstacles)

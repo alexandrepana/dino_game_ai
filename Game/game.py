@@ -61,7 +61,7 @@ class Game:
             except:
                 print('!!! ERROR !!!: something went wrong in keyboard section.')
         
-        if (input):
+        if (input and self.player.grounded):
             self.game_actions[input]()
     
     def update_objects(self):
