@@ -115,7 +115,7 @@ def __main__():
                 print(f'After: ')
                 print(f'p1: {ai.policy[state1]}')
                 print(f'p2: {ai.policy[state2]}')
-                # input("Press Enter to continue...")
+                input("Press Enter to continue...")
 
             # Remember the original state if we are no longer grounded (target will be where we land)
             # Update initial state action space
@@ -124,14 +124,6 @@ def __main__():
 
             ai.reduce_epsilon(max_step - steps)
 
-            
-            
-            # if(steps%1000 == 0):
-            #     fig, ax = plt.subplots()
-            #     ax.plot(x,y, '-')
-            #     ax.set_xlabel("Run")
-            #     ax.set_ylabel("Obstacles passed")
-            #     fig.savefig("GRAPH.jpg")
         
         if (game.over):
             game.quit()
