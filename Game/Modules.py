@@ -10,3 +10,4 @@ from Game.obstacle import *
 from Game.score import *
 from Game.ground import *
 from Game.sarsa import Sarsa
+from Game.qlearning import QLearning
