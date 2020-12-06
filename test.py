@@ -37,5 +37,5 @@ stay = 0.8
 # Initialize AI
 ai = Sarsa(epsilon, gamma, alpha, jump, stay)
 ai.import_policy("agent.txt")
-ai.print_policy()
+#ai.print_policy()
 

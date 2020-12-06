@@ -70,7 +70,9 @@ class Sarsa():
 
             for state in contents:
                 info = state.split(':')
-                temp[(info[0])] = [float(info[1]), float(info[2])]
+                info[0].replace("'", "")
+
+                temp[tuple(key)] = [float(info[1]), float(info[2])]
         
             self.give_policy(temp)
 

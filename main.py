@@ -1,9 +1,10 @@
 #!python3
 from Game.game import *
+import matplotlib.pyplot as plt
 
 def __main__():
     # Game Settings
-    display_graphics = False
+    display_graphics = True
     gamemode = 'ai'
     
     # Ai sarsa settings
@@ -13,7 +14,8 @@ def __main__():
     alpha = 0.95
     jump = 0.2
     stay = 0.8
-    episodes = 10000
+    max_step = 100000
+    steps = max_step
     
     # Define our windows
     if display_graphics:
@@ -33,13 +35,17 @@ def __main__():
     state1 = ai.get_state(game.obstacle_manager.obstacles)
     action1 = ai.select_action(state1) # action is an input, index is how we access the value
     reward = 0
+
+    #matplot
+    x = []
+    y = []
     
-    if(!training): ai.import_policy("agent.txt")
+    if not (training): ai.import_policy("agent.txt")
 
     # Game Loop
-    while (episodes > 0):
+    while (steps > 0):
        
-        episodes -= 1
+        steps -= 1
 
         if (gamemode == 'human'):
             # Get the action to perform
@@ -54,10 +60,11 @@ def __main__():
 
         # if we hit an object make a large negative reward
         if(game.just_collided):
-            reward -= 100
+            reward -= 10
         # if we dodged an object reward positive
         elif(game.check_dodge):
-            reward += 20
+            print("DODGED")
+            reward += 100
         elif(action1 == "jump"):
             reward -=10
         
@@ -78,8 +85,17 @@ def __main__():
         if (game.over):
             game.quit()
             break
+        
+        if(steps%1000 == 0):
+            y.append(game.obstacle_manager.passed)
+            x.append(max_step - steps)
+            fig, ax = plt.subplots()
+            ax.plot(x,y, '-')
+            ax.set_xlabel("Step")
+            ax.set_ylabel("Obstacle Score")
+            fig.savefig("GRAPH.jpg")
 
-    #ai.print_policy()
+    ai.print_policy()
     if(training): ai.export_policy("agent.txt")
     
     if (game_window):
