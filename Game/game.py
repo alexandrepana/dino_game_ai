@@ -29,6 +29,15 @@ class Game:
 
     def set_over(self):
         self.over = 1
+
+    def get_reward(self, passed_count, jumped):
+        if (self.just_collided):
+            return -5
+        if (passed_count < self.obstacle_manager.passed):
+            return 5
+        if (jumped):
+            return -1
+        return 0
     
     # PROGRAM THIS
     def get_game_objects(self):

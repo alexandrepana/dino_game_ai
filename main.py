@@ -9,6 +9,8 @@ def __main__():
     # display_graphics = True
     # debug_mode = True
     gamemode = 'ai'
+    learning = 'sarsa'
+    # learning = 'qlearning'
     
     # Ai sarsa settings
     training = True
@@ -36,9 +38,13 @@ def __main__():
 
     # Initialize AI
     ai = Sarsa(epsilon, gamma, alpha, jump, stay)
+    if (learning == 'qlearning'):
+        ai = QLearning(epsilon, gamma, alpha, jump, stay)
     # state1
     state1 = ai.get_state(game.obstacle_manager.obstacles)
-    action1 = ai.select_action(state1) # action is an input, index is how we access the value
+
+    if (learning == 'sarsa'):
+        action1 = ai.select_action(state1) # action is an input, index is how we access the value
     
     #matplot
     x = []
@@ -53,6 +59,9 @@ def __main__():
             print(steps)
 
         steps -= 1
+
+        if (learning == 'qlearning'):
+            action1 = ai.select_action(state1) # action is an input, index is how we access the value
 
         if (gamemode == 'human'):
             # Get the action to perform
@@ -75,9 +84,11 @@ def __main__():
 
             action2 = ai.select_action(state2)
 
+            reward = game.get_reward(passed_count, (action1 == 0))
+
             # REWARD
             if(game.just_collided):
-                reward = -5
+                # reward = -5
                 game.just_collided = False
                 # Add to graph
                 y.append(passed_count)
@@ -90,11 +101,11 @@ def __main__():
             # if we dodged an object reward positive
             elif(passed_count < game.obstacle_manager.passed):
                 passed_count = game.obstacle_manager.passed
-                reward = 5
-            elif(action1 == 0):
-                reward = -1
-            else:
-                reward = 0
+                # reward = 5
+            # elif(action1 == 0):
+            #     reward = -1
+            # else:
+            #     reward = 0
 
             if (debug_mode):
                 print(f'Updating Policy:')
