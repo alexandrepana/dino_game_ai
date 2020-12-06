@@ -164,7 +164,8 @@ def __main__():
     ax.plot(x, y, '-')
     ax.set_xlabel("Run")
     ax.set_ylabel("Obstacles passed")
-    fig.savefig("GRAPH.jpg")
+    ax.set_title(f'{learning}: epsilon {epsilon} gamma {gamma} alpha {alpha}')
+    fig.savefig(f'{learning}_epsilon{epsilon}_gamma{gamma}_alpha{alpha}.jpg')
 
     ai.print_policy()
     if(training):
