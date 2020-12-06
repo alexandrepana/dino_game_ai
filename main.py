@@ -2,6 +2,7 @@
 from Game.game import *
 import matplotlib.pyplot as plt
 
+
 def __main__():
     # Game Settings
     display_graphics = False
@@ -9,9 +10,9 @@ def __main__():
     # display_graphics = True
     # debug_mode = True
     gamemode = 'ai'
-    learning = 'sarsa'
-    # learning = 'qlearning'
-    
+    # learning = 'sarsa'
+    learning = 'qlearning'
+
     # Ai sarsa settings
     training = True
     epsilon = 0.3
@@ -25,8 +26,10 @@ def __main__():
 
     # Define our windows
     if display_graphics:
-        game_window = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
-        game_window.setCoords(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window = GraphWin(
+            'Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
+        game_window.setCoords(0, 0, Constants.WINDOW_WIDTH,
+                              Constants.WINDOW_HEIGHT)
         game_window.setBackground('white')
     else:
         game_window = None
@@ -38,20 +41,20 @@ def __main__():
 
     # Initialize AI
     ai = Sarsa(epsilon, gamma, alpha, jump, stay)
-    if (learning == 'qlearning'):
-        ai = QLearning(epsilon, gamma, alpha, jump, stay)
     # state1
     state1 = ai.get_state(game.obstacle_manager.obstacles)
 
     if (learning == 'sarsa'):
-        action1 = ai.select_action(state1) # action is an input, index is how we access the value
-    
-    #matplot
+        # action is an input, index is how we access the value
+        action1 = ai.select_action(state1)
+
+    # matplot
     x = []
     y = []
     run_num = 0
-    
-    if not (training): ai.import_policy("agent.txt")
+
+    if not (training):
+        ai.import_policy("agent.txt")
 
     # Game Loop
     while (steps > 0):
@@ -61,28 +64,43 @@ def __main__():
         steps -= 1
 
         if (learning == 'qlearning'):
-            action1 = ai.select_action(state1) # action is an input, index is how we access the value
+            # action is an input, index is how we access the value
+            action1 = ai.select_action(state1)
 
         if (gamemode == 'human'):
             # Get the action to perform
             game.get_input()
         elif (gamemode == 'ai'):
             # Input AI action
-            if(action1 == 0): game.get_input("jump")
+            if(action1 == 0):
+                game.get_input("jump")
 
         # Update game
         game.update_objects()
         game.update_sprites()
 
-        
         # Get next state action space
         state2 = ai.get_state(game.obstacle_manager.obstacles)
-        
+
         if (state2 != state1 and game.player.grounded):
             reward = 0
-            
 
-            action2 = ai.select_action(state2)
+            if (learning == 'sarsa'):  # sarsa
+                action2 = ai.select_action(state2)
+            else:  # q-learning
+                jumpSim = game
+                continueSim = game
+
+                jumpReward = jumpSim.get_reward(passed_count, (action1 == 0))
+                continueReward = continueSim.get_reward(
+                    passed_count, (action1 == 0))
+
+                if (jumpReward > continueReward):
+                    action2 = 0
+                elif (continueReward > jumpReward):
+                    action2 = 1
+                else:
+                    action2 = ai.select_action(state2)
 
             reward = game.get_reward(passed_count, (action1 == 0))
 
@@ -101,11 +119,6 @@ def __main__():
             # if we dodged an object reward positive
             elif(passed_count < game.obstacle_manager.passed):
                 passed_count = game.obstacle_manager.passed
-                # reward = 5
-            # elif(action1 == 0):
-            #     reward = -1
-            # else:
-            #     reward = 0
 
             if (debug_mode):
                 print(f'Updating Policy:')
@@ -135,12 +148,10 @@ def __main__():
 
             ai.reduce_epsilon(max_step - steps)
 
-        
         if (game.over):
             game.quit()
             break
-    
-    
+
     # Add final info to graph
     y.append(passed_count)
     x.append(run_num)
@@ -150,16 +161,18 @@ def __main__():
 
     # Create Graph
     fig, ax = plt.subplots()
-    ax.plot(x,y, '-')
+    ax.plot(x, y, '-')
     ax.set_xlabel("Run")
     ax.set_ylabel("Obstacles passed")
     fig.savefig("GRAPH.jpg")
 
     ai.print_policy()
-    if(training): ai.export_policy("agent.txt")
-    
+    if(training):
+        ai.export_policy("agent.txt")
+
     if (game_window):
         game_window.close()
+
 
 if __name__ == '__main__':
     __main__()
