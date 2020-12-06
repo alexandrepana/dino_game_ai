@@ -1,18 +1,10 @@
 #!python3
 from Game.game import *
 import time
-# from AI.policy import *
+from AI.policy import *
 from AI.state import *
 import random
-
-
-class Policy:
-    def __init__(self):
-        self.jumpProb = 0.2
-        self.continueProb = 0.8
-
-    def getValues(self):
-        return (self.jumpProb, self.continueProb)
+import matplotlib.pyplot as plt
 
 
 def epsilon_greedy(state_policy, actions):
@@ -31,15 +23,15 @@ def epsilon_greedy(state_policy, actions):
 
 def __main__():
     # Game Settings
-    display_graphics = True
+    display_graphics = False
     # gamemode = 'human'
     gamemode = 'ai'
-    algorithm = 'sarsa'
-    # algorithm = 'qlearning'
+    # algorithm = 'sarsa'
+    algorithm = 'qlearning'
 
-    episodes = 1
+    episodes = 1000
     a = 0.1
-    r = 0.1
+    r = 0.5
 
     action_decision = {
         "probabilistic": False,
@@ -49,7 +41,6 @@ def __main__():
     # 0: jump
     # 1: continue
     actions = [0, 1]
-    # distances = [-(Constants.UNIT_SIZE*i) for i in range(80)]
     distances = []
 
     # Define our windows
@@ -71,6 +62,18 @@ def __main__():
     game = Game(game_window, gamemode, display_graphics)
     game.load_sprites()
     game.start_timer()
+    # episode_label = Text(Point(Constants.WINDOW_WIDTH /
+    #                            2 + 150, 25), "Episode: 0").draw(game_window)
+
+    # p = importPolicy("testFile.txt")
+    p = States(distances)
+
+    # episode_label = Text(Point(Constants.WINDOW_WIDTH /
+    #                            2 + 150, 25), "Episode: 0").draw(game_window)
+
+    # For graphing:
+    x = []  # Episodes
+    y = []  # Obstacles passed per episode
 
     if (gamemode == 'human'):
         while True:
@@ -104,15 +107,10 @@ def __main__():
         #       S = S'
         #       A = A'
         '''
-        # p = importPolicy("testFile.txt")
-        p = States(distances)
-
-        episode_label = Text(Point(Constants.WINDOW_WIDTH /
-                                   2 + 150, 25), "Episode: 0").draw(game_window)
 
         for i in range(episodes):
             print("EPISODE:", i)
-            episode_label.setText("Episode: " + str(i))
+            # episode_label.setText("Episode: " + str(i))
             game.obstacle_manager.passed = 0
             distance = game.player.x - game.obstacle_manager.obstacles[0].x
 
@@ -131,7 +129,7 @@ def __main__():
                 # with probability 1 - epsilon + epsilon/len(actions)
                 A = epsilon_greedy(S.policy.getValues(), actions)
 
-            steps = 5000
+            steps = 0
             # loop for each step of episode (while S is not terminal)
             # for j in range(steps):
             while game.obstacle_manager.passed < 20:
@@ -139,9 +137,12 @@ def __main__():
                 # take action A
                 if (A == 0):
                     game.get_input('jump')
-                    # print("Jumping")
-                # else:
-                    # print("Continuing")
+                else:
+                    game.get_input()
+
+                game.update_objects()
+                game.update_sprites()
+
                 # observe R, S'
                 distance = game.player.x - game.obstacle_manager.obstacles[0].x
                 S2 = p.getState(distance, False)
@@ -150,6 +151,8 @@ def __main__():
                 if game.get_collided():
                     R = -100
                     print("Oof, A caused a collision")
+                elif game.check_dodge():
+                    R = 100
 
                 # Choose A' from S' using policy derived from Q (e-greedy)
                 if action_decision["probabilistic"]:
@@ -185,11 +188,16 @@ def __main__():
                 game.update_objects()
                 game.update_sprites()
 
-        print("POLICY:")
-        for key in p.tStates.keys():
-            print(key, ": ", p.tStates[key].policy.getValues())
+            # Graphing
+            y.append(game.obstacle_manager.obstacle_score)
+            x.append(i)
 
-        exportPolicy(p, "testFile.txt")
+        plt.clf()
+        fig, ax = plt.subplots()
+        ax.plot(x, y, '-')
+        ax.set_xlabel("Episodes")
+        ax.set_ylabel("Steps per Episode")
+        fig.savefig("GRAPH.jpg")
 
     elif (gamemode == 'ai' and algorithm == 'qlearning'):
         '''
@@ -207,10 +215,13 @@ def __main__():
         #       Q(S, A) = Q(S, A) + alpha[R + learning_rate(max(Q(S', a))) - Q(S, A)]
         #       S = S'
         '''
-        p = States(distances)
 
         for i in range(episodes):
+            print("EPISODE:", i)
+            # episode_label.setText("Episode: " + str(i))
+            game.obstacle_manager.passed = 0
             distance = game.player.x - game.obstacle_manager.obstacles[0].x
+
             onGround = game.player.grounded
 
             # Initialize S
@@ -219,29 +230,68 @@ def __main__():
             steps = 5000
             # loop for each step of episode (while S is not terminal)
             # for j in range(steps):
-            while game.obstacle_manager.passed < 25:
+            while game.obstacle_manager.passed < 20:
                 # Choose A from S using policy derived from Q
-                A = random.choices(
-                    actions, weights=S.policy.getValues(), k=1)[0]
+                A = None
+
+                if action_decision["probabilistic"]:
+                    # Choose A from S using policy derived from Q
+                    A = random.choices(
+                        actions, weights=S.policy.getValues(), k=1)[0]
+                elif action_decision["epsilon_greedy"]:
+                    # Choose the BEST action A (given in policy)
+                    # with probability 1 - epsilon + epsilon/len(actions)
+                    A = epsilon_greedy(S.policy.getValues(), actions)
+
                 # take action A
                 if (A == 0):
                     game.get_input('jump')
+                else:
+                    game.get_input()
+
+                game.update_objects()
+                game.update_sprites()
 
                 # observe R, S'
                 distance = game.player.x - game.obstacle_manager.obstacles[0].x
                 S2 = p.getState(distance, False)
-                if (game.player.grounded == 1):
-                    S2 = p.getState(distance, True)
 
                 R = 0
-                if (distance > 0 and game.player.grounded == 1):
-                    R = -10
-                elif (distance > 0 and game.player.grounded == 0):
-                    R = 10
+                if game.get_collided():
+                    R = -100
+                    print("Oof, A caused a collision")
+                elif game.check_dodge():
+                    R = 100
 
-                # Choose A' from S' using policy derived from Q (e-greedy)
-                A2 = random.choices(
-                    actions, weights=S2.policy.getValues(), k=1)[0]
+                # find max(A(S', a))
+                simJump = game.simulate_input('jump')
+                simContinue = game.simulate_input()
+
+                simJump.update_objects()
+                simJump.update_sprites()
+                simContinue.update_objects()
+                simContinue.update_sprites()
+
+                jumpReward = 0
+                continueReward = 0
+
+                if (simJump.get_collided()):
+                    jumpReward = -100
+                elif (simJump.check_dodge()):
+                    jumpReward = 100
+                if (simContinue.get_collided()):
+                    continueReward = -100
+                elif(simContinue.check_dodge()):
+                    continueReward = 100
+
+                # arbitrarily choose A2
+                A2 = random.choices(actions, [1, 1], k=1)[0]
+
+                # get max option for A2 if available
+                if (jumpReward > continueReward):
+                    A2 = 0
+                if (continueReward > jumpReward):
+                    A2 = 1
 
                 # Q(S, A) = Q(S, A) + alpha[R + learning_rate(Q(S', A')) - Q(S, A)]
                 updatedValue = S.policy.getValues()[A]
@@ -250,11 +300,58 @@ def __main__():
                               [A2]) - S.policy.getValues()[A])
                 S.policy.update(A, updatedValue)
 
+                if (game.player.grounded == 1):
+                    S2 = p.getState(distance, True)
+
+                # End the episode after calculating the Q value of a collision
+                if game.get_collided():
+                    game.set_collided(False)
+                    break
+
                 # S = S'
                 S = S2
 
-                game.update_objects()
-                game.update_sprites()
+            # Graphing
+            y.append(game.obstacle_manager.obstacle_score)
+            x.append(i)
+
+        plt.clf()
+        fig, ax = plt.subplots()
+        ax.plot(x, y, '-')
+        ax.set_xlabel("Episodes")
+        ax.set_ylabel("Steps per Episode")
+        fig.savefig("GRAPH.jpg")
+
+    elif (gamemode == 'ai' and algorithm == 'sarsa2'):
+        '''
+        Input: a feature function
+        Input: a policy (p)
+        Algorithm Parameters: step size a > 0, trace decay rate lambda [1, 0]
+        Initialize weight vector in with dimension d
+
+        loop for each episode:
+            Initialize S
+            Choose A from p(S)
+            x = x(S, A)
+            z = 0
+            Qold = 0
+            loop for each step of the episode: (until S' is terminal)
+                Take action A
+                Observe R, S'
+                Choose A' from p(S)
+                x' = s(S', A')
+                Q = Transpose(W)*x
+                Q' = transpose(W)x'
+                delta = R + v*Q' - A
+                z = v*decayRate*z + (1 - a*v*decayRate*transpose(z)*x)*x
+                w = w + a(delta + Q - Qold)*z) - a(Q - Qold)*x
+                Qold = Q'
+                x = x'
+                A = A'
+        '''
+        for i in range(episodes):
+            S = State()
+            A = random.choices(actions, weights=S.policy.getValues(), k=1)[0]
 
 
 def exportPolicy(p, fileName):

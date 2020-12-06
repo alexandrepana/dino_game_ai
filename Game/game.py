@@ -26,6 +26,16 @@ class Game:
             'quit': self.set_over
         }
 
+    def check_dodge(self):
+        for obstacle in self.obstacle_manager.obstacles:
+            if (self.player.x + self.player.width > obstacle.x and
+                self.player.x < obstacle.x + obstacle.width and
+                self.player.y + self.player.height < obstacle.y and
+                    self.player.y > obstacle.y + obstacle.height):
+                return True
+            else:
+                return False
+
     def player_jump(self):
         if (self.player.grounded):
             self.player.jump()
@@ -48,6 +58,14 @@ class Game:
     # Start the score timer
     def start_timer(self):
         self.score.start()
+
+    def simulate_input(self, input=None):
+        sim = self
+
+        if (input):
+            sim.game_actions[input]()
+
+        return sim
 
     # If input is passed from ai, execute that. Otherwise get from user
     def get_input(self, input=None):
@@ -107,7 +125,7 @@ class Game:
                 self.just_collided = True
                 self.score.reset()
                 self.obstacle_manager.reset()
-    
+
     def get_collided(self):
         return self.just_collided
 

@@ -5,11 +5,11 @@ from Game.Modules import *
 # Our Player Class
 class Player(Game_Object):
     def __init__(self):
-        self.x = 50
+        self.x = 0
         self.y = Constants.GROUND
         self.y_vel = 0
-        self.jump_speed = 20
-        self.gravity = 2.3
+        self.jump_speed = Constants.UNIT_SIZE
+        self.gravity = Constants.UNIT_SIZE
         self.grounded = 1
         self.height = Constants.UNIT_SIZE
         self.width = Constants.UNIT_SIZE
