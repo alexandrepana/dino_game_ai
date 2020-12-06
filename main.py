@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def __main__():
     # Game Settings
-    display_graphics = True
+    display_graphics = False
     gamemode = 'ai'
     
     # Ai sarsa settings
@@ -62,7 +62,7 @@ def __main__():
 
         # if we hit an object make a large negative rewardqq
         if(game.just_collided):
-            reward = 0
+            reward -= 20
         # if we dodged an object reward positive
         elif(passed_count < game.obstacle_manager.passed):
             passed_count += 1
