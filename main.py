@@ -10,14 +10,14 @@ def __main__():
     # Ai sarsa settings
     training = True
     epsilon = 0.9
-    gamma = 0.95
-    alpha = 0.75
+    gamma = 0.5
+    alpha = .95
     jump = 0.2
     stay = 0.8
     max_step = 100000
     steps = max_step
     passed_count = 0
-    reward = 0
+    
 
     # Define our windows
     if display_graphics:
@@ -46,7 +46,7 @@ def __main__():
 
     # Game Loop
     while (steps > 0):
-
+        reward = 0
         steps -= 1
 
         if (gamemode == 'human'):
@@ -62,13 +62,15 @@ def __main__():
 
         # if we hit an object make a large negative rewardqq
         if(game.just_collided):
-            reward -= 20
+            reward = -100
         # if we dodged an object reward positive
         elif(passed_count < game.obstacle_manager.passed):
             passed_count += 1
-            reward += 20
+            reward = 100
         elif(action1 == "jump"):
-            reward -=10
+            reward = -10
+        else:
+            reward = 10
         
         # Get next state action space
         state2 = ai.get_state(game.obstacle_manager.obstacles)

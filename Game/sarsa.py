@@ -35,9 +35,7 @@ class Sarsa():
         return choice
 
     def update_policy(self, key1, index1, key2, index2, reward):
-        #print(index1)
         predict = self.policy[key1][index1]
-        #print(index2)
         target = reward + self.gamma * self.policy[key2][index2]
         self.policy[key1][index1] += self.alpha * (target - predict)
 
