@@ -6,9 +6,10 @@ from AI.state import *
 import random
 import matplotlib.pyplot as plt
 
+epsilon = 0.1
+
 
 def epsilon_greedy(state_policy, actions):
-    epsilon = 0.1
 
     # Chooses whether to go epsilon or the greedy path, ensures exploration
     epsilon_choice = random.choices(["Greedy", "Epsilon"],
@@ -29,9 +30,9 @@ def __main__():
     # algorithm = 'sarsa'
     algorithm = 'qlearning'
 
-    episodes = 1000
-    a = 0.1
-    r = 0.5
+    episodes = 10000
+    a = 0.5
+    r = 0.1
 
     action_decision = {
         "probabilistic": False,
@@ -150,7 +151,7 @@ def __main__():
                 R = 0
                 if game.get_collided():
                     R = -100
-                    print("Oof, A caused a collision")
+                    # print("Oof, A caused a collision")
                 elif game.check_dodge():
                     R = 100
 
@@ -197,7 +198,7 @@ def __main__():
         ax.plot(x, y, '-')
         ax.set_xlabel("Episodes")
         ax.set_ylabel("Steps per Episode")
-        fig.savefig("GRAPH.jpg")
+        fig.savefig("SARSA(a={}r={}e={}).jpg".format(a, r, epsilon))
 
     elif (gamemode == 'ai' and algorithm == 'qlearning'):
         '''
@@ -259,9 +260,11 @@ def __main__():
                 R = 0
                 if game.get_collided():
                     R = -100
-                    print("Oof, A caused a collision")
+                    # print("Oof, A caused a collision")
                 elif game.check_dodge():
                     R = 100
+                elif A == 0:
+                    R = -10
 
                 # find max(A(S', a))
                 simJump = game.simulate_input('jump')
@@ -272,7 +275,7 @@ def __main__():
                 simContinue.update_objects()
                 simContinue.update_sprites()
 
-                jumpReward = 0
+                jumpReward = -10
                 continueReward = 0
 
                 if (simJump.get_collided()):
@@ -320,7 +323,7 @@ def __main__():
         ax.plot(x, y, '-')
         ax.set_xlabel("Episodes")
         ax.set_ylabel("Steps per Episode")
-        fig.savefig("GRAPH.jpg")
+        fig.savefig("QLearning(a={}r={}e={}).jpg".format(a, r, epsilon))
 
     elif (gamemode == 'ai' and algorithm == 'sarsa2'):
         '''
