@@ -6,6 +6,7 @@ class Sarsa():
     def __init__(self, epsilon, gamma, alpha, default_jump, default_stay):
         self.d_jump = default_jump
         self.d_stay = default_stay
+        self.initial_epsilon = epsilon
         self.epsilon = epsilon
         self.gamma = gamma
         self.alpha = alpha
@@ -27,7 +28,7 @@ class Sarsa():
     def select_action(self, key):
         x = random.random() # create random float between 0 - 1
 
-        if (x > self.epsilon):
+        if (x < self.epsilon):
             choice = int(self.policy[key].index((random.choice(self.policy[key]))))
         else:
             choice = int(self.policy[key].index((max(self.policy[key]))))
@@ -36,8 +37,8 @@ class Sarsa():
 
     def update_policy(self, key1, index1, key2, index2, reward):
         predict = self.policy[key1][index1]
-        target = reward + self.gamma * self.policy[key2][index2]
-        self.policy[key1][index1] += self.alpha * (target - predict)
+        target = self.gamma * self.policy[key2][index2]
+        self.policy[key1][index1] += self.alpha * (reward + target - predict)
 
     def test(self):
         print(closest_unit(750))
@@ -73,6 +74,11 @@ class Sarsa():
                 temp[tuple(key)] = [float(info[1]), float(info[2])]
         
             self.give_policy(temp)
+    
+    def reduce_epsilon(self, steps):
+        self.epsilon = -0.0000005 * steps + self.initial_epsilon
+        if (self.epsilon < 0):
+            self.epsilon = 0
 
 
 def remove_unused(keys, max_num):
