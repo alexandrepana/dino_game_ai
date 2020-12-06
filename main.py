@@ -58,12 +58,11 @@ def __main__():
         game.update_objects()
         game.update_sprites()
 
-        # if we hit an object make a large negative reward
+        # if we hit an object make a large negative rewardqq
         if(game.just_collided):
             reward -= 10
         # if we dodged an object reward positive
         elif(game.check_dodge):
-            print("DODGED")
             reward += 100
         elif(action1 == "jump"):
             reward -=10
