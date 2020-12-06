@@ -33,7 +33,8 @@ def __main__():
     state1 = ai.get_state(game.obstacle_manager.obstacles)
     action1 = ai.select_action(state1) # action is an input, index is how we access the value
     reward = 0
-    #print(index1)
+    
+    if(!training): ai.import_policy("agent.txt")
 
     # Game Loop
     while (episodes > 0):
@@ -78,7 +79,8 @@ def __main__():
             game.quit()
             break
 
-    ai.print_policy()
+    #ai.print_policy()
+    if(training): ai.export_policy("agent.txt")
     
     if (game_window):
         game_window.close()

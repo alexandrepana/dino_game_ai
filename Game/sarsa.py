@@ -55,6 +55,26 @@ class Sarsa():
         for key in self.policy.keys():
             print(key, ": ", self.policy[key])
 
+    def export_policy(self, file_name):
+        with open(file_name, 'w') as f:
+            for key in self.policy.keys():
+                item = "{}:{}:{}".format(key, self.policy[key][0], self.policy[key][1])
+                f.write("%s\n" % item)
+    
+    def import_policy(self, file_name):
+       
+        with open(file_name, 'r') as f:
+            
+            contents = f.readlines()
+            temp = {}
+
+            for state in contents:
+                info = state.split(':')
+                temp[(info[0])] = [float(info[1]), float(info[2])]
+        
+            self.give_policy(temp)
+
+
 def remove_unused(keys, max_num):
     temp = keys[:]
     for key in keys:
