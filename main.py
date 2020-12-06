@@ -9,14 +9,16 @@ def __main__():
     
     # Ai sarsa settings
     training = True
-    epsilon = 0.1
-    gamma = 0.85
-    alpha = 0.95
+    epsilon = 0.9
+    gamma = 0.95
+    alpha = 0.75
     jump = 0.2
     stay = 0.8
     max_step = 100000
     steps = max_step
-    
+    passed_count = 0
+    reward = 0
+
     # Define our windows
     if display_graphics:
         game_window = GraphWin('Dino Game', Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT)
@@ -34,7 +36,7 @@ def __main__():
     ai = Sarsa(epsilon, gamma, alpha, jump, stay)
     state1 = ai.get_state(game.obstacle_manager.obstacles)
     action1 = ai.select_action(state1) # action is an input, index is how we access the value
-    reward = 0
+    
 
     #matplot
     x = []
@@ -44,7 +46,7 @@ def __main__():
 
     # Game Loop
     while (steps > 0):
-       
+
         steps -= 1
 
         if (gamemode == 'human'):
@@ -60,10 +62,11 @@ def __main__():
 
         # if we hit an object make a large negative rewardqq
         if(game.just_collided):
-            reward -= 10
+            reward = 0
         # if we dodged an object reward positive
-        elif(game.check_dodge):
-            reward += 100
+        elif(passed_count < game.obstacle_manager.passed):
+            passed_count += 1
+            reward += 20
         elif(action1 == "jump"):
             reward -=10
         
@@ -91,7 +94,7 @@ def __main__():
             fig, ax = plt.subplots()
             ax.plot(x,y, '-')
             ax.set_xlabel("Step")
-            ax.set_ylabel("Obstacle Score")
+            ax.set_ylabel("Obstacles passed")
             fig.savefig("GRAPH.jpg")
 
     ai.print_policy()
